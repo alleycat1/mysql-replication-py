@@ -1,0 +1,198 @@
+0.1 01/05/2013
+* Initial Release with MySQL 5.5 and MySQL 5.6 support
+
+0.2 13/10/2013
+* Make it work under pymysql 0.6
+* Ignore position of some events
+* Fix FormatDescriptionEvent has zero log_pos
+* Support checksum for mysql 5.6
+* Add feature to start stream from position
+* Change names of events to V2
+* Added NotImplementedEvent for a few events that we currently don't need
+* Support null events and a slight change of names
+* Support MySQL Broken Dates :(
+* Introduce data objects for Table / Column
+* Add support for TINYINT(1) to bool() Mapping
+
+0.3 07/07/2014
+* use NotImplementedEvent instead of raising an Exception
+* Python 3 fix
+* Add 2006 to Mysql expected error codes
+
+0.4 01/09/2014
+* Add primary column informations (thanks to Lx Lu)
+* Python 2.6 support (thanks to Darioush Jalalinasab)
+* Parse gtid events (thanks to Arthur Gautier)
+* Code cleanup (thanks to Bernardo Sulzbach)
+* Travis support
+
+0.4.1 01/09/2014
+* Fix missing commit for GTID in 0.4 release
+
+0.5 28/09/2014
+* Remove default server id
+* Performances improvements
+* Allow filter events by schema and tables
+
+0.6 10/05/2015
+* Prevent invalid table-map-entries to crash the whole app
+* Add support for Stop Event, update tests
+* Fix the order of binlog events, though we don't support them yet
+* Simplified RowsEvent.rows to be @property instead of __getattr__ hack
+* add binlog row minimal and noblob image support
+* remove six not being used.
+* misc code style improvements, mainly pep8
+* Update event.py to be compatible with python2.6.7
+* explicitly break reference cycle when closing binlogstreamreader
+* break reference loop using weakref to prevent memory-leaking
+* Freeze schema.
+* Freeze table schema
+* Avoid named parameters passed to packet because it's slower
+* Filter table and schema event
+* PyPy support
+
+0.7 21/06/2015
+* Partial fix for dropped columns blowing up replication when replaying binlog with past events
+* Skipping GTID tests on DBs not set up to support GTID
+* Adding support for skipping the binlog until reaching specified timestamp.
+* Add support for BeginLoadQueryEvent and ExecuteLoadQueryEvent
+
+0.8 02/01/2016
+
+* bugfix for decoding values of columns in charset "utf8mb4"
+* Close connection on EOF packet
+* Don't fail on incomplete dates (with 0 as day or month), such as 2015-00-21 or 2015-05-00
+* Fix GtidSet __str__ representation
+* Fix typo in TableMapEvent comment
+* gtid failed parsing: raise with value
+* Explicit close stream connection on exception, to prevent sockets from sitting in CLOSE_WAIT status with PyPy
+* Further (micro)optimization: Moving popular column types to top of if/elif, so they can shortcircuit earlier.
+* Making Column attribiutes into regular object attributes instead of a dictionary. This makes getting the attribute about 20 times faster.
+
+0.9 20/05/2016
+
+* Allow to specify a pymysql wrapper or subclass
+* setup travis to run test on multiple mysql version (5.6 and 5.7)
+* test run with mysql5.7
+* report-slave: Allow reporting of port if username not supplied
+* gtid: fixup parsing on mysql format
+* added intvar event
+* binlogstream: improve slave report
+* Support for slave_uuid
+* Report slave in SHOW SLAVE HOSTS
+* fix: missing update _next_seq_no
+* PyMYSQL 0.7
+* Add more contributors
+
+0.10 30/11/2016 
+* row-events: TIME is now encoded as python.timedelta
+* Allow users to define ctl_connection_settings and the option to fail when table information is unavailable (#176)
+* Decode gtid from network packet
+* fixed count of fetched events
+* unittest2 is only a test requirement
+
+0.11 07/02/2017
+* Implement Heartbeat (#191)
+* Fix handling of JSON data (#182)
+
+0.12 04/04/2017
+* Clear table_map if RotateEvent has timestamp of 0 (#197)
+* Add support for ignored_tables and ignored_schema (#201)
+* failed to get table information (#199)
+
+0.13 18/04/2017
+* Fixup gtid parsing (#204)
+  This remove duplicate event from your stream if you use auto_position (the
+  first one in the stream used to be a duplicate on reconnection, this is no
+  longer the case).
+* Fix struct.pack in ReportSlave (#194)
+
+0.14 11/09/2017
+* binlogstream: only_tables requires row binlog_format (#209)
+* Add implementation of read_int32 (#213)
+* fix formatting of GTIDs under py3 (#227)
+
+0.15 11/09/2017
+* event: fixup gtid serialization
+
+0.16 02/02/2018
+* json: Fixup string parsing (#246)
+* binlogstream: Raise an explanatory exception when binary logging is not enabled. (#245)
+* datetime: Fixup parsing (#236)
+
+0.17 02/02/2018
+* remove python2.6 support
+
+0.18 01/03/2018
+* bubble up protocol errors
+
+0.19 29/04/2019
+* Fix Insert NULL in a boolean column returns no rows #288
+* Added empty string support for enum 
+* Fix column order
+* Fix float problem about time fieldtype
+
+0.20 22/11/2019
+* Added support for limited columnar access in MySQL
+* Python3 fixes
+* Add gtidset comparison methods
+
+0.21 22/11/2019
+* fix ci configuration
+* Added support for limited columnar access in MySQL
+
+0.22 20/09/2020
+* Support PyMysql with a version greater than 0.9.3
+* Fix handling of JSON literal values
+
+0.23 25/01/2021
+* Add logic to handle inlined ints in large json documents
+
+0.24 27/06/2021
+* Support PyMySQL 1.0
+
+0.25 21/07/2021
+* Support 'ZEROFILL' attribute for numeric datatypes
+
+0.26 30/08/2021
+* Correct timedelta value for negative MySQL TIME datatype
+* Fix parsing of row events for MySQL8 partitioned table
+* Set PyMySql version minimum to 0.10
+
+0.27 18/10/2021
+* Parse NULL-bitmask in table map event
+* Add support for specifying an end log_pos
+* Parse status variables in query event
+
+0.28 23/01/2022
+* Add support for MariaDB GTID
+
+0.29 08/04/2022
+* Skip db name parsing if mts_accessed_dbs == 254 
+
+0.30 28/04/2022
+* Fix decoding large json arrays
+* Handle null json
+
+0.31 12/03/2023
+* Fix parse error for query_events with MariaDB
+
+0.40 07/05/2023
+* Drop support for Python 2.7
+* Gtid: remove __cmp__ due to python2 support dropped.
+* Mariadb 10.6.12: Mitigate corrupt binlog event bug
+
+0.41 03/06/2023
+* Zero-pad fixed-length binary fields
+
+0.42 25/06/2023
+* Add XAPrepareEvent, parse last_committed & sequence_number of GtidEvent
+
+0.42.1 09/07/2023
+* Fix merging error of XAPrepareEvent
+
+0.42.2 16/07/2023
+* Fix release error
+
+0.43.0 23/07/2023
+* Bump PyMySQL to 1.1.0 to solve : LookupError: unknown encoding: utf8mb3
